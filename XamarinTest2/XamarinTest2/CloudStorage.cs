@@ -13,7 +13,6 @@ namespace XamarinTest2
     {
         public static CloudBlobContainer GetContainer(string containerName)
         {
-            //string connectionString = $"DefaultEndpointsProtocol=https;AccountName={Config.accountName};AccountKey={Config.accountKey};EndpointSuffix=core.windows.net";
             string connectionString = $"DefaultEndpointsProtocol=https;AccountName={Config.accountName};AccountKey={Config.accountKey}";
 
             var account = CloudStorageAccount.Parse(connectionString);
@@ -27,10 +26,18 @@ namespace XamarinTest2
         {
             var container = GetContainer("container1");
             var blob = container.GetBlockBlobReference(blobName);
+            
+            try
+            {
+                string res = await blob.DownloadTextAsync();
+                return res;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
 
-            string res = await blob.DownloadTextAsync();
-
-            return res;
+            return "Error while reading blob";
         }
         public static async Task UploadBlob(string blobName, string content)
         {
@@ -53,15 +60,24 @@ namespace XamarinTest2
             BlobContinuationToken token = null;
 
             List<CloudBlockBlob> blobList = new List<CloudBlockBlob>();
-            do
+            try
             {
-                var responce = await container.ListBlobsSegmentedAsync(token);
-                token = responce.ContinuationToken;
-                foreach (var blob in responce.Results.OfType<CloudBlockBlob>())
+                do
                 {
-                    blobList.Add(blob);
-                }
-            } while (token != null);
+
+                    var responce = await container.ListBlobsSegmentedAsync(token);
+                    token = responce.ContinuationToken;
+                    foreach (var blob in responce.Results.OfType<CloudBlockBlob>())
+                    {
+                        blobList.Add(blob);
+                    }
+                } while (token != null);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            
 
             return blobList;
         }
