@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:XamarinTest2"
+             x:Class="XamarinTest2.MainPage">
+
+    <StackLayout>
+        <!-- Place new controls here -->
+        <StackLayout HorizontalOptions="CenterAndExpand"
+                     VerticalOptions="CenterAndExpand">
+            <Label x:Name="DebugLabel"
+                   Text="Debug Label"
+                   />
+            <Button x:Name="DebugButton" Text = "Debug Button" Clicked="DebugButton_Clicked" />
+            <!--
+            <Label x:Name="StudentName"
+                   FontSize="Large"
+                   FontAttributes="Bold"
+                   />
+            <Label x:Name="StudentFaculty"
+                   FontAttributes="Italic"
+                   />
+            <Stepper x:Name="StudentScore"
+                     Minimum="2"
+                     Maximum="5"
+                     />
+            -->
+        </StackLayout>
+    </StackLayout>
+
+</ContentPage>
