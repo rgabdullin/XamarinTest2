@@ -70,11 +70,7 @@ namespace XamarinTest2
                 PropertyChanged(this, new PropertyChangedEventArgs(prop));
             }
         }
-
-        /*public async Task CloudSync()
-        {
-
-        }*/
+        
         public static Student Parse(string st)
         {
             var args = st.Split('\n');

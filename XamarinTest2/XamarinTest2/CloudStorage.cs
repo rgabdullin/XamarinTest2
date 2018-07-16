@@ -11,46 +11,44 @@ namespace XamarinTest2
 {
     class CloudStorage
     {
-        private string accountName;
-        private string accountKey;
-        private string containerName;
-        public CloudStorage(string container, string name, string key)
+        public static CloudBlobContainer GetContainer(string containerName)
         {
-            containerName = container;
-            accountKey = key;
-            accountName = name;
-        }
-
-        public async Task<string> DownloadBlob(string blobName)
-        {
-            string connectionString = $"DefaultEndpointsProtocol=https;AccountName={accountName};AccountKey={accountKey};EndpointSuffix=core.windows.net;";
-            //string connectionString = $"DefaultEndpointsProtocol=https;AccountName={accountName};AccountKey={accountKey};";
+            //string connectionString = $"DefaultEndpointsProtocol=https;AccountName={Config.accountName};AccountKey={Config.accountKey};EndpointSuffix=core.windows.net";
+            string connectionString = $"DefaultEndpointsProtocol=https;AccountName={Config.accountName};AccountKey={Config.accountKey}";
 
             var account = CloudStorageAccount.Parse(connectionString);
             var client = account.CreateCloudBlobClient();
             var container = client.GetContainerReference(containerName);
+
+            return container;
+        }
+
+        public static async Task<string> DownloadBlob(string blobName)
+        {
+            var container = GetContainer("container1");
             var blob = container.GetBlockBlobReference(blobName);
 
             string res = await blob.DownloadTextAsync();
 
             return res;
         }
-        public async Task UploadBlob(string blobName, string content)
+        public static async Task UploadBlob(string blobName, string content)
         {
-            string connectionString = $"DefaultEndpointsProtocol=https;AccountName={accountName};AccountKey={accountKey};EndpointSuffix=core.windows.net;";
-            var account = CloudStorageAccount.Parse(connectionString);
-            var client = account.CreateCloudBlobClient();
-            var container = client.GetContainerReference(containerName);
+            var container = GetContainer("container1");
             var blob = container.GetBlockBlobReference(blobName);
 
-            await blob.UploadTextAsync(content);
+            try
+            {
+                await blob.UploadTextAsync(content);
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
-        public async Task<List<CloudBlockBlob>> GetBlobList()
+        public static async Task<List<CloudBlockBlob>> GetBlobList()
         {
-            string connectionString = $"DefaultEndpointsProtocol=https;AccountName={accountName};AccountKey={accountKey};EndpointSuffix=core.windows.net;";
-            var account = CloudStorageAccount.Parse(connectionString);
-            var client = account.CreateCloudBlobClient();
-            var container = client.GetContainerReference(containerName);
+            var container = GetContainer("container1");
 
             BlobContinuationToken token = null;
 
